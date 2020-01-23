@@ -1,59 +1,90 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+import ToDoListItem from './toDo.js';
 
-class Timer extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { seconds: 0 };
+class App extends React.Component{
+  state = {
+    todoList:JSON.parse(localStorage.getItem("todoList")) || []
   }
 
-  tick() {
-    this.setState(state => ({
-      seconds: state.seconds + 1
-    }));
-  }
-
-  componentDidMount() {
-    this.interval = setInterval(() => this.tick(), 1000);
-  }
-
-  componentWillUnmount() {
-    clearInterval(this.interval);
-  }
-
-  resetConut(){
-    //clearInterval(this.interval);
-    this.setState(state => ({
-      seconds:0
-    }));
-  }
-
-  renderBtn(){
-    return (
-      <button
-      onClick={() => this.resetConut()}
-      >
-        ボタン
-      </button>
+  addTodo = (item,callback) => {
+    this.setState(
+      {
+        todoList:this.state.todoList.concat(item)
+      },
+      () => {
+        localStorage.setItem("todoList",JSON.stringify(this.state.todoList))
+        callback && callback()
+      }
     )
   }
 
-  render() {
+  removeTodo = (item,callback) => {
+    this.setState(
+      {
+        todoList:this.state.todoList.filter(x => x !== item)        
+      },
+      () => {
+        localStorage.setItem("todoList",JSON.stringify(this.state.todoList))
+        callback && callback()
+      }
+    )
+  }
+
+  handleSubmit = (e) => {
+    e.preventDefault();
+    const titleElement = e.target.elements.title;
+    const descriptionElement = e.target.elements.description;//computedではなくした
+    this.addTodo(
+      {
+        title:titleElement.value,
+        description:descriptionElement.value
+      },
+      () => {
+        titleElement.value = "";
+        descriptionElement.value = "";
+      }
+    )
+  }
+  render(){
     return (
-      <div>
-        <div>
-        Seconds: {this.state.seconds}
-        </div>
-        <div className="btn">
-          {this.renderBtn()}
-        </div>
+      <div className="App">
+          <form className="App_form"
+            onSubmit={this.handleSubmit}
+            >
+          <div>
+            <input
+              id="title"
+              placeholder="title"
+            />
+            <textarea
+              id = "description"
+              placeholder = "description"
+            />
+            </div>
+            <div>
+              <button type="submit">
+                add!!!
+              </button>
+            </div>
+          </form>
+          <div>
+            {this.state.todoList.map(todo => (
+              <ToDoListItem
+                key = {todo.title}
+                title = {todo.title}
+                description = {todo.description}
+                onClick = {() => this.removeTodo(todo)}
+              />
+            ))}
+          </div>
       </div>
-    );
+    )
   }
 }
 
 ReactDOM.render(
-  <Timer />,
+  <App />,
   document.getElementById('root')
 );
