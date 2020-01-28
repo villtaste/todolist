@@ -36,16 +36,22 @@ class App extends React.Component{
     e.preventDefault();
     const titleElement = e.target.elements.title;
     const descriptionElement = e.target.elements.description;//computedではなくした
-    this.addTodo(
-      {
-        title:titleElement.value,
-        description:descriptionElement.value
-      },
-      () => {
-        titleElement.value = "";
-        descriptionElement.value = "";
-      }
-    )
+    //console.log(titleElement.value,descriptionElement.value)
+    if (titleElement.value !== "" && descriptionElement.value !== ""){
+      this.addTodo(
+        {
+          title:titleElement.value,
+          description:descriptionElement.value
+        },
+        () => {
+          titleElement.value = "";
+          descriptionElement.value = "";
+        }
+      )
+    } else {
+      alert("やることとタイトルを入れてね！")
+    }
+
   }
   render(){
     return (

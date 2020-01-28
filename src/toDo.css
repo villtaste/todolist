@@ -1,7 +1,9 @@
+/*
 .toDoListGrid{
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
 }
+*/
 .toDoListItem {
     border: 1px solid #7fffd4;
     margin: 12px;
